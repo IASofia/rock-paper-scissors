@@ -1,6 +1,8 @@
 "use strict";
 
-const ROUNDS = 5;
+const resultDisplay = document.querySelector(".result");
+const playerDisplay = document.querySelector(".player");
+const computerDisplay = document.querySelector(".computer");
 
 function getComputerChoice() {
   const options = ["rock", "paper", "scissors"];
@@ -36,20 +38,35 @@ function playRound(playerSelection, computerSelection) {
 
 function game() {
   let playerScore = 0;
+  let computerScore = 0;
+  let gameOver = false;
 
-  for (let i = 0; i < ROUNDS; i++) {
-    const playerSelection = prompt("Rock, paper or scissors? ");
-    const computerSelection = getComputerChoice();
+  const buttons = document.querySelectorAll("button");
+  buttons.forEach((b) =>
+    b.addEventListener("click", (e) => {
+      if (!gameOver) {
+        const computerSelection = getComputerChoice();
+        const playerSelection = e.target.classList.value;
 
-    const result = playRound(playerSelection, computerSelection);
-    result.winner === "player" && playerScore++;
-    console.log(result.message);
-  }
-  if (playerScore >= 3) {
-    console.log("You win the game!");
-  } else {
-    console.log("You lose the game!");
-  }
+        const result = playRound(playerSelection, computerSelection);
+        if (result.winner === "player") playerScore++;
+        else if (result.winner === "computer") computerScore++;
+
+        resultDisplay.textContent = result.message;
+        playerDisplay.textContent = playerScore;
+        computerDisplay.textContent = computerScore;
+
+        if (playerScore === 5) {
+          resultDisplay.textContent = "You win the game";
+          gameOver = true;
+        }
+        if (computerScore === 5) {
+          resultDisplay.textContent = "You lost the game";
+          gameOver = true;
+        }
+      }
+    })
+  );
 }
 
 game();
